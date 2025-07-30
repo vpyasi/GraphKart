@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import imageMap from '../utils/imageMap';
 import { Heart } from 'lucide-react';
-import $ from 'jquery';
 
 
 
