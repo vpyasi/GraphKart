@@ -21,7 +21,7 @@ WORKDIR /src/Neo4j/neo4j.client
 RUN npm install && npm run build
 
 # Build backend
-WORKDIR /src/Neo4j/Server
+WORKDIR /src/Neo4j/neo4j.Server
 RUN dotnet build "Neo4j.Server.csproj" -c Release -o /app/build
 
 # ---- Publish .NET app ----
