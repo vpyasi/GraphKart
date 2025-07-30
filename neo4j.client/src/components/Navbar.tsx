@@ -1,6 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaDatabase, FaUserCircle, FaArrowLeft } from 'react-icons/fa'; 
+import { FaDatabase, FaUserCircle } from 'react-icons/fa'; 
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);

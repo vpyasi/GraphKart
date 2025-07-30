@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { ReactNode } from 'react';
 
 const Footer = () => (
   <footer className="bg-white border-t mt-10 w-full">

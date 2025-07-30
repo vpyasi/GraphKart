@@ -30,12 +30,15 @@ const AddProductPage = () => {
                 tags: product.tags.split(',').map(tag => tag.trim())
             });
             alert('Product added successfully!');
-            setProduct({
+           setProduct({
                 name: '',
                 price: '',
                 imageUrl: '',
-                category: ''
+                category: '',
+                description: '',
+                tags: ''
             });
+
         } catch (err) {
             console.error(err);
             alert('Error adding product');
