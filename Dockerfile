@@ -1,41 +1,43 @@
-# ---- Base image for .NET SDK ----
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-
-# Install Node.js (for React build)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    node -v && npm -v
-
-# Set working directory
-WORKDIR /src
-
-# Restore backend dependencies
-COPY Neo4j/Server/Neo4j.Server.csproj Neo4j/Server/
-RUN dotnet restore "Neo4j/Server/Neo4j.Server.csproj"
-
-# Copy entire source
-COPY Neo4j /src/Neo4j
-
-# Build frontend
-WORKDIR /src/Neo4j/neo4j.client
-RUN npm install && npm run build
-
-# Build backend
-WORKDIR /src/Neo4j/neo4j.Server
-RUN dotnet build "Neo4j.Server.csproj" -c Release -o /app/build
-
-# ---- Publish .NET app ----
-FROM build AS publish
-RUN dotnet publish "Neo4j.Server.csproj" -c Release -o /app/publish
-
-# ---- Final runtime image ----
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+# --------------------
+# Stage 1: Build React App
+# --------------------
+FROM node:18-alpine AS frontend-builder
 WORKDIR /app
 
-# Copy backend publish output
-COPY --from=publish /app/publish .
+# Copy React app
+COPY ../neo4j.client ./neo4j.client
 
-# Copy built React frontend to wwwroot
-COPY --from=build /src/Neo4j/neo4j.client/dist ./wwwroot
+# Install dependencies and build
+WORKDIR /app/neo4j.client
+RUN npm install && npm run build
+
+# --------------------
+# Stage 2: Build .NET App
+# --------------------
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+
+# Copy backend project
+COPY . ./Neo4j.Server
+WORKDIR /src/Neo4j.Server
+
+# Restore, build, publish
+RUN dotnet restore
+RUN dotnet publish -c Release -o /app/publish
+
+# --------------------
+# Stage 3: Final Image
+# --------------------
+FROM base AS final
+
+# Copy published backend
+COPY --from=build /app/publish .
+
+# Copy built frontend into wwwroot
+COPY --from=frontend-builder /app/neo4j.client/dist ./wwwroot
 
 ENTRYPOINT ["dotnet", "Neo4j.Server.dll"]
