@@ -4,8 +4,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<Neo4j.Server.Services.Neo4jService>();
 
@@ -17,40 +15,41 @@ var password = neo4jSettings["Password"];
 
 builder.Services.AddSingleton(GraphDatabase.Driver(uri, AuthTokens.Basic(user, password)));
 
-builder.Services.AddSingleton(GraphDatabase.Driver(uri, AuthTokens.Basic(user, password)));
-
 // ✅ Add CORS service
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
         policy
-            .WithOrigins("https://localhost:59548", "http://localhost:3000") // include all possible frontend origins
+            .WithOrigins("https://localhost:59548", "http://localhost:3000") // frontend dev URLs
+            .SetIsOriginAllowed(_ => true) // <-- allow any origin dynamically (for prod flexibility)
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowCredentials(); // if you're using cookies/auth
+            .AllowCredentials();
     });
 });
 
 var app = builder.Build();
 
 app.UseDefaultFiles();
-app.MapStaticAssets(); // make sure this serves your /assets folder correctly
+app.MapStaticAssets(); // Serves /assets or static SPA files
 
-// ✅ Apply CORS before routing, authorization, etc.
+// ✅ Apply CORS before routing
 app.UseCors("AllowAllOrigins");
 
+// ✅ Only use HTTPS redirection in development (to avoid issues on Render)
 if (app.Environment.IsDevelopment())
 {
+    app.UseHttpsRedirection();
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
+// ✅ Use authorization/middleware
 app.UseAuthorization();
 
 app.MapControllers();
 
+// ✅ Fallback for SPA routing
 app.MapFallbackToFile("/index.html");
 
 app.Run();

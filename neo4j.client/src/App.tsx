@@ -11,6 +11,7 @@ import CategoryPage from './pages/CategoryPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import WishlistPage from './pages/WishlistPage';
 import AddProductPage from './pages/AddProductPage';
+import Verify from './pages/verify';
    
 const AppRoutes = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -39,10 +40,12 @@ const AppRoutes = () => {
                             <Route path="/" element={<HomePage />} />
                             <Route path="/cart" element={<CartPage />} />
                             <Route path="/category/:category" element={<CategoryPage />} />
-                                <Route path="/admin" element={<AddProductPage />} />
+                            <Route path="/admin" element={<AddProductPage />} />
                             <Route path="/product/:id" element={<ProductDetailPage />} />
                              <Route path="*" element={<Navigate to="/" replace />} />
                              <Route path="/wishlist" element={<WishlistPage />} />
+                             <Route path="/verify" element={<Verify />} />
+
                         </>
                     )}
                 </Routes>

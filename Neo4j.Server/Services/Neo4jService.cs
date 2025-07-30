@@ -181,11 +181,12 @@ namespace Neo4j.Server.Services
         public async Task SendVerificationEmail(string recipientEmail, string token)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("TechTrolly", "sumatitester@gmail.com"));
+            message.From.Add(new MailboxAddress("TechTrolly", "vikashgupta.it45@gmail.com"));
             message.To.Add(MailboxAddress.Parse(recipientEmail));
             message.Subject = "Welcome to Techtrolly - Verify your email";
 
-            string verificationUrl = $"http://localhost:7008/verify?token={token}";
+            string verificationUrl = $"https://graphkart.web.app/verify?token={token}";
+
             message.Body = new TextPart("plain")
             {
                 Text = $"Hello {recipientEmail},\n\nWelcome to Arbeit Search!\nPlease verify your email by clicking the link below:\n\n{verificationUrl}\n\nThanks,\nTechTrolly Team"

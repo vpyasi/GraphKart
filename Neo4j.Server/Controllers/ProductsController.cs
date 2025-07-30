@@ -31,6 +31,7 @@ namespace Neo4j.Server.Controllers
             var products = await _neo4j.GetProductsAsync(sortBy, desc, category);
             return Ok(products);
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserDto user)
         {
