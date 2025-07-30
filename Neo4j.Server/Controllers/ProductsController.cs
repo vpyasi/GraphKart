@@ -53,7 +53,7 @@ namespace Neo4j.Server.Controllers
         public async Task<IActionResult> CreateProduct([FromBody] ProductDto product)
         {
             try
-            {0
+            {
                 await _neo4j.CreateProductAsync(product);
                 return Ok(new { message = "Product created successfully." });
             }
