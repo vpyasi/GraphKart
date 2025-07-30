@@ -1,0 +1,142 @@
+# ===============================
+# .NET / ASP.NET Core (.csproj)
+# ===============================
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.env
+
+# Mono auto generated files
+mono_crash.*
+
+# Build results
+bin/
+obj/
+out/
+Debug/
+Release/
+x64/
+x86/
+*.dll
+*.exe
+*.pdb
+
+# Logs
+*.log
+Logs/
+
+# Visual Studio
+.vs/
+Generated\ Files/
+*.sdf
+*.cache
+*.dbmdl
+*.VC.db
+*.opendb
+*.opensdf
+
+# ASP.NET specific
+appsettings.Development.json
+appsettings.*.json
+*.publishsettings
+*.azurePubxml
+
+# Test Results
+TestResult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# Publish
+publish/
+*.publishproj
+*.pubxml
+
+# Azure
+csx/
+*.build.csdef
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.msm
+*.msp
+
+# IDE and tooling
+*.nupkg
+*.snupkg
+*.vsix
+*.pidb
+*.scc
+*.tlog
+*.tmp
+*.tmp_proj
+*.sbr
+*.suo
+*.user
+*.userosscache
+*.cachefile
+
+# JetBrains Rider
+.idea/
+
+# Code coverage tools
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# Others
+ClientBin/
+~$*
+*~
+
+
+# ===============================
+# React Frontend (Vite + Node.js)
+# ===============================
+
+# Build output
+neo4j.client/dist/
+neo4j.client/build/
+
+# Dependency directory
+neo4j.client/node_modules/
+
+# Caches
+neo4j.client/.vite/
+neo4j.client/.cache/
+neo4j.client/.eslintcache
+
+# Env files
+neo4j.client/.env
+neo4j.client/.env.local
+neo4j.client/.env.development.local
+neo4j.client/.env.test.local
+neo4j.client/.env.production.local
+
+# Editor junk
+neo4j.client/.DS_Store
+neo4j.client/.vscode/
+
+# Log files
+neo4j.client/npm-debug.log*
+neo4j.client/yarn-debug.log*
+neo4j.client/yarn-error.log*
+neo4j.client/pnpm-debug.log*
+
+# IDE-specific (optional)
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific
+Thumbs.db
+.DS_Store
+
+# Misc
+*.orig
+*.rej

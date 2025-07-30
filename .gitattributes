@@ -1,0 +1,11 @@
+# Treat image assets as binary to prevent Git diff errors
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.webp binary
+*.svg binary
+*.ico binary
+
+# Optional: prevent diffing large assets
+/assets/* binary
