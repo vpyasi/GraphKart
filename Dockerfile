@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy React app
 COPY ../neo4j.client ./neo4j.client
 
+# Set env to avoid local cert generation in vite.config.ts
+ENV DOCKER_BUILD=true
+
 # Install dependencies and build
 WORKDIR /app/neo4j.client
 RUN npm install && npm run build

@@ -6,67 +6,82 @@ import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
 
-const baseFolder =
-    env.APPDATA !== undefined && env.APPDATA !== ''
-        ? `${env.APPDATA}/ASP.NET/https`
-        : `${env.HOME}/.aspnet/https`;
+const isDocker = process.env.DOCKER_BUILD === 'true';
 
-const certificateName = "neo4j.client";
-const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
-const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
+let httpsOptions: any = false;
 
-if (!fs.existsSync(baseFolder)) {
-    fs.mkdirSync(baseFolder, { recursive: true });
-}
+if (!isDocker) {
+    const baseFolder =
+        env.APPDATA !== undefined && env.APPDATA !== ''
+            ? `${env.APPDATA}/ASP.NET/https`
+            : `${env.HOME}/.aspnet/https`;
 
-if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
-    if (0 !== child_process.spawnSync('dotnet', [
-        'dev-certs',
-        'https',
-        '--export-path',
-        certFilePath,
-        '--format',
-        'Pem',
-        '--no-password',
-    ], { stdio: 'inherit' }).status) {
-        throw new Error("Could not create certificate.");
+    const certificateName = "neo4j.client";
+    const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
+    const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
+
+    if (!fs.existsSync(baseFolder)) {
+        fs.mkdirSync(baseFolder, { recursive: true });
     }
+
+    if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+        if (
+            0 !==
+            child_process.spawnSync(
+                'dotnet',
+                [
+                    'dev-certs',
+                    'https',
+                    '--export-path',
+                    certFilePath,
+                    '--format',
+                    'Pem',
+                    '--no-password',
+                ],
+                { stdio: 'inherit' }
+            ).status
+        ) {
+            throw new Error('Could not create certificate.');
+        }
+    }
+
+    httpsOptions = {
+        key: fs.readFileSync(keyFilePath),
+        cert: fs.readFileSync(certFilePath),
+    };
 }
 
 const target = env.ASPNETCORE_HTTPS_PORT
     ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`
     : env.ASPNETCORE_URLS
-        ? env.ASPNETCORE_URLS.split(';')[0]
-        : 'https://graphkart.onrender.com';
+    ? env.ASPNETCORE_URLS.split(';')[0]
+    : 'https://graphkart.onrender.com';
 
 export default defineConfig({
     plugins: [plugin()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+        },
     },
     server: {
         proxy: {
             '^/weatherforecast': {
                 target,
-                secure: false
-            }
+                secure: false,
+            },
         },
         port: parseInt(env.DEV_SERVER_PORT || '59548'),
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
-        }
+        https: httpsOptions,
     },
     define: {
         'process.env.NODE_ENV': '"development"',
-        global: 'globalThis'
+        global: 'globalThis',
     },
     build: {
         sourcemap: true,
         commonjsOptions: {
-            include: [/node_modules/]
-        }
-    }
+            include: [/node_modules/],
+        },
+    },
 });
