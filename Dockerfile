@@ -1,37 +1,41 @@
-# --------- BUILD STAGE ---------
+# ---- Base image for .NET SDK ----
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
-# Install Node.js (for React)
+# Install Node.js (for React build)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs && \
+    node -v && npm -v
 
 # Set working directory
-WORKDIR /app
+WORKDIR /src
 
-# Copy .NET project and restore
-COPY ["Neo4j.Server/Neo4j.Server.csproj", "Neo4j.Server/"]
-RUN dotnet restore "Neo4j.Server/Neo4j.Server.csproj"
+# Restore backend dependencies
+COPY Neo4j/Server/Neo4j.Server.csproj Neo4j/Server/
+RUN dotnet restore "Neo4j/Server/Neo4j.Server.csproj"
 
-# Copy everything
-COPY . .
+# Copy entire source
+COPY Neo4j /src/Neo4j
 
-# Build React frontend
-WORKDIR /app/Neo4j.Client
+# Build frontend
+WORKDIR /src/Neo4j/neo4j.client
 RUN npm install && npm run build
 
-# Copy built React app into .NET project wwwroot
-RUN cp -r dist/* ../Neo4j.Server/wwwroot/
+# Build backend
+WORKDIR /src/Neo4j/Server
+RUN dotnet build "Neo4j.Server.csproj" -c Release -o /app/build
 
-# Build .NET backend
-WORKDIR /app/Neo4j.Server
-RUN dotnet build -c Release -o /build
-RUN dotnet publish -c Release -o /publish
+# ---- Publish .NET app ----
+FROM build AS publish
+RUN dotnet publish "Neo4j.Server.csproj" -c Release -o /app/publish
 
-# --------- RUNTIME STAGE ---------
+# ---- Final runtime image ----
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
-# Copy published .NET app
-COPY --from=build /publish .
+# Copy backend publish output
+COPY --from=publish /app/publish .
+
+# Copy built React frontend to wwwroot
+COPY --from=build /src/Neo4j/neo4j.client/dist ./wwwroot
 
 ENTRYPOINT ["dotnet", "Neo4j.Server.dll"]
