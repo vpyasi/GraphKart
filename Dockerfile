@@ -1,14 +1,14 @@
 # --------------------
 # Stage 1: Base ASP.NET Runtime
 # --------------------
-FROM mcr.microsoft.com/dotnet/aspnet:90 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 80
 
 # --------------------
 # Stage 2: Build .NET + React App
 # --------------------
-FROM mcr.microsoft.com/dotnet/sdk:90 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # ✅ Install Node.js required for esproj build
