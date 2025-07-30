@@ -1,13 +1,11 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+﻿import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { FaDatabase, FaUserCircle } from 'react-icons/fa'; 
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const location = useLocation();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -22,8 +20,7 @@ const Navbar = () => {
     };
 
     const toggleDropdown = () => setShowDropdown(prev => !prev);
-
-    const handleGoBack = () => navigate(-1);
+   
 
     return (
         <nav className="bg-white shadow-sm border-b">

@@ -1,4 +1,3 @@
-import React from "react";
 import { Heart, Trash2 } from "lucide-react";
 import { useWishlist } from "../context/WishlistContext";
 
