@@ -24,7 +24,7 @@ const ProductList: React.FC<ProductListProps> = ({ onProductClick }) => {
 
     useEffect(() => {
         axios
-            .get('http://graphkart.onrender.com/api/products')
+            .get(`${import.meta.env.VITE_API_BASE_URL}/api/products`)
             .then((response) => {
                 setProducts(response.data);
                 setLoading(false);

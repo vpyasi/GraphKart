@@ -21,7 +21,7 @@ const AddProductPage = () => {
 
         try {
 
-            await axios.post('https://graphkart.onrender.com/api/products/Add', {
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/products/Add`, {
                 name: product.name,
                 price: parseFloat(product.price),
                 imageUrl: product.imageUrl,

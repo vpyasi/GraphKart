@@ -19,7 +19,7 @@ const SignupPage = () => {
         setError('');
 
         try {
-            await axios.post('https://localhost:7008/api/products/register', form);        
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/products/register`, form);
             navigate('/login');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Signup failed.');

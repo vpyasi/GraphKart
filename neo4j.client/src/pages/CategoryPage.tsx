@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import imageMap from '../utils/imageMap';
 import { Heart } from 'lucide-react';
+import $ from 'jquery';
+
+
 
 type Product = {
     id: string;
@@ -30,7 +33,8 @@ const CategoryPage = () => {
             setLoading(true);
             try {
                 const res = await axios.get(
-                    `https://graphkart.onrender.com/api/products?category=${category}&sortBy=${sortBy}&desc=${desc}`                   
+                    `${import.meta.env.VITE_API_BASE_URL}/api/products?category=${category}&sortBy=${sortBy}&desc=${desc}`
+             
                 );
                 setProducts(res.data);
             } catch (err) {

@@ -15,7 +15,7 @@ const AdminPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://graphkart.onrender.com/api/products', {
+            const response = await fetch('${import.meta.env.VITE_API_BASE_URL}/api/products', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),

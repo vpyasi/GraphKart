@@ -6,6 +6,5 @@
   ],
   "compilerOptions": {
     "verbatimModuleSyntax": true,
-    "importsNotUsedAsValues": "preserve"
   }
 }

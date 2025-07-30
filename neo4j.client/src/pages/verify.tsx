@@ -19,7 +19,7 @@ export default function Verify() {
 
        
         axios
-            .post('https://graphkart.onrender.com/api/user/verify', { token })
+            .post(`${import.meta.env.VITE_API_BASE_URL}/api/user/verify`, { token })
             .then(() => {
                 setStatus('success');
                 setMessage('Email successfully verified! Redirecting to login...');
