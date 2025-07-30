@@ -36,7 +36,7 @@ export default function ProductDetailPage() {
 
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`https://localhost:7008/api/products/${id}`);
+                const res = await axios.get(`https://graphkart.onrender.com/api/products/${id}`);
                 if (res.data.id) {
                     setProduct(res.data);
                 } else {
@@ -60,7 +60,7 @@ export default function ProductDetailPage() {
         }
 
         try {
-            await axios.post('https://localhost:7008/api/products/wishlist', {
+            await axios.post('https://graphkart.onrender.com/api/products/wishlist', {
                 productId: product.id,
                 userName: user.name
             });
@@ -84,7 +84,7 @@ export default function ProductDetailPage() {
             if (localStorage.getItem(viewedKey)) return;
 
             try {
-                await axios.post('https://localhost:7008/api/products/viewed', {
+                await axios.post('https://graphkart.onrender.com/api/products/viewed', {
                     username: 'Ayush@gmail.com',
                     productId: id
                 });

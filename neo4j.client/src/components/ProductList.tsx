@@ -24,7 +24,7 @@ const ProductList: React.FC<ProductListProps> = ({ onProductClick }) => {
 
     useEffect(() => {
         axios
-            .get('http://localhost:7008/api/products')
+            .get('http://graphkart.onrender.com/api/products')
             .then((response) => {
                 setProducts(response.data);
                 setLoading(false);

@@ -30,7 +30,7 @@ const CategoryPage = () => {
             setLoading(true);
             try {
                 const res = await axios.get(
-                    `https://localhost:7008/api/products?category=${category}&sortBy=${sortBy}&desc=${desc}`
+                    `https://graphkart.onrender.com/api/products?category=${category}&sortBy=${sortBy}&desc=${desc}`
                 );
                 setProducts(res.data);
             } catch (err) {

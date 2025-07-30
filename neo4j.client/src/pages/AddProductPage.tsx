@@ -21,7 +21,7 @@ const AddProductPage = () => {
 
         try {
 
-            await axios.post('https://localhost:7008/api/products/Add', {
+            await axios.post('https://graphkart.onrender.com/api/products/Add', {
                 name: product.name,
                 price: parseFloat(product.price),
                 imageUrl: product.imageUrl,
