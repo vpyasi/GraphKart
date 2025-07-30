@@ -1,34 +1,27 @@
 # --------------------
-# Stage 1: Build React App
+# Stage 1: Base ASP.NET Runtime
 # --------------------
-FROM node:18-alpine AS frontend-builder
-WORKDIR /app
-
-# Copy React app
-COPY ../neo4j.client ./neo4j.client
-
-# Set env to avoid local cert generation in vite.config.ts
-ENV DOCKER_BUILD=true
-
-# Install dependencies and build
-WORKDIR /app/neo4j.client
-RUN npm install && npm run build
-
-# --------------------
-# Stage 2: Build .NET App
-# --------------------
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:90 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# --------------------
+# Stage 2: Build .NET + React App
+# --------------------
+FROM mcr.microsoft.com/dotnet/sdk:90 AS build
 WORKDIR /src
 
-# Copy backend project
-COPY . ./Neo4j.Server
-WORKDIR /src/Neo4j.Server
+# ✅ Install Node.js required for esproj build
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    node -v && npm -v
 
-# Restore, build, publish
+# ✅ Copy full source
+COPY . .
+
+# ✅ Restore and publish (React + .NET)
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app/publish
 
@@ -37,10 +30,7 @@ RUN dotnet publish -c Release -o /app/publish
 # --------------------
 FROM base AS final
 
-# Copy published backend
+# Copy published app
 COPY --from=build /app/publish .
-
-# Copy built frontend into wwwroot
-COPY --from=frontend-builder /app/neo4j.client/dist ./wwwroot
 
 ENTRYPOINT ["dotnet", "Neo4j.Server.dll"]
