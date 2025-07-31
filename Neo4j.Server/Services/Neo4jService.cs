@@ -184,7 +184,7 @@ namespace Neo4j.Server.Services
             message.From.Add(new MailboxAddress("TechTrolly", "vikashgupta.it45@gmail.com"));
             message.To.Add(MailboxAddress.Parse(recipientEmail));
             message.Subject = "Welcome to Techtrolly - Verify your email";
-    
+
             string verificationUrl = $"https://graphkart.onrender.com/verify?token={token}";
 
 

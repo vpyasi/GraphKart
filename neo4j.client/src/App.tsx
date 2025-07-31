@@ -23,8 +23,7 @@ const AppRoutes = () => {
     }, [location]);
 
     return (
-        <>
-            {/* Navbar & Footer only when logged in */}
+        <>           
             {isLoggedIn && <Navbar />}
 
             <main className="flex-grow w-full">

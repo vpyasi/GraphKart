@@ -9,8 +9,7 @@ export default function LoginPage() {
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (email && password) {
-            // Store token and user info
+        if (email && password) {           
             localStorage.setItem('token', 'demo-token');
             localStorage.setItem('user', JSON.stringify({ name: email }));
 

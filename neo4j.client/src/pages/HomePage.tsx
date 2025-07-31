@@ -1,5 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useNavigate } from 'react-router-dom';
+﻿import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import laptopImg from '/src/assets/laptops.jpg';
 import phoneImg from '/src/assets/phones.jpg';
@@ -23,8 +22,7 @@ const HomePage = () => {
     };
 
     return (
-        <div className="w-full font-sans">
-            {/* Hero Section */}
+        <div className="w-full font-sans">            
             <motion.section
                 className="relative bg-gradient-to-r from-sky-100 to-indigo-200 py-20 sm:py-28 text-center px-4"
                 initial={{ opacity: 0, y: -60 }}
@@ -48,8 +46,7 @@ const HomePage = () => {
                     Shop Now
                 </motion.button>
             </motion.section>
-
-            {/* Features Section */}
+   
             <section className="py-16 sm:py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-10 text-gray-800">Why Choose Us?</h2>
@@ -75,8 +72,7 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
-
-            {/* Popular Categories */}
+        
             <section id="popular-categories" className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-10 text-gray-800">Explore Popular Categories</h2>
@@ -115,8 +111,6 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
-
-            {/* CTA Section */}
             <motion.section
                 className="bg-indigo-700 text-white text-center py-16 sm:py-20 px-4 sm:px-6"
                 initial={{ opacity: 0 }}

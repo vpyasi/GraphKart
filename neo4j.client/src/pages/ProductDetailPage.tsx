@@ -126,11 +126,9 @@ export default function ProductDetailPage() {
     const imageSrc = imageMap[imageKey] || imageMap['fallback.jpg'];
 
     return (
-        <>
-            {/* Page Content */}
+        <>         
             <div className="max-w-6xl mx-auto px-6 py-10 relative z-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-                    {/* Product Image */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">                  
                     <div className="w-full">
                         <img
                             src={imageSrc}
@@ -139,8 +137,7 @@ export default function ProductDetailPage() {
                             onClick={() => setShowOverlay(true)}
                         />
                     </div>
-
-                    {/* Product Info */}
+                   
                     <div className="flex flex-col space-y-6">
                         <h1 className="text-4xl font-extrabold text-gray-800">{product?.name}</h1>
                         <p className="text-2xl text-blue-600 font-semibold">
@@ -178,8 +175,6 @@ export default function ProductDetailPage() {
                     </div>
                 </div>
             </div>
-
-            {/* Overlay Animation */}
             <AnimatePresence>
                 {showOverlay && (
                     <motion.div

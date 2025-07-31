@@ -91,8 +91,7 @@ const CategoryPage = () => {
                             <div
                                 key={product.id}
                                 className="bg-white shadow rounded overflow-hidden hover:shadow-lg transition relative cursor-pointer"
-                            >
-                                {/* ❤️ Wishlist icon */}
+                            >                                
                                 <button className="absolute top-2 right-2 text-red-500 hover:text-red-600 z-10">
                                     <Heart className="w-5 h-5" />
                                 </button>
@@ -126,9 +125,8 @@ const CategoryPage = () => {
                         );
                     })}
                 </div>
-            )}
-            o
-            {/* 🖼️ Large image popup modal */}
+            )}          
+          
             {selectedImage && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
