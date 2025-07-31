@@ -8,8 +8,8 @@ const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
-    const mobileMenuRef = useRef(null);
-    const overlayRef = useRef(null);
+    const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+    const overlayRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -18,19 +18,20 @@ const Navbar = () => {
         setIsMobileMenuOpen(false);
     }, [location]);
 
-    
     useEffect(() => {
-        const handleClickOutside = (event: { target: any; }) => {
-            if (isMobileMenuOpen &&
+        const handleClickOutside = (event: { target: any }) => {
+            if (
+                isMobileMenuOpen &&
                 mobileMenuRef.current &&
                 !mobileMenuRef.current.contains(event.target) &&
                 overlayRef.current &&
-                overlayRef.current.contains(event.target)) {
+                overlayRef.current.contains(event.target)
+            ) {
                 setIsMobileMenuOpen(false);
             }
         };
 
-        const handleEscapeKey = (event) => {
+        const handleEscapeKey = (event: KeyboardEvent) => {
             if (event.key === 'Escape' && isMobileMenuOpen) {
                 setIsMobileMenuOpen(false);
             }
@@ -39,7 +40,7 @@ const Navbar = () => {
         if (isMobileMenuOpen) {
             document.addEventListener('mousedown', handleClickOutside);
             document.addEventListener('keydown', handleEscapeKey);
-            document.body.style.overflow = 'hidden'; 
+            document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
         }
@@ -60,7 +61,6 @@ const Navbar = () => {
 
     const toggleDropdown = () => setShowDropdown(prev => !prev);
     const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev);
-
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
     const desktopNavLinks = (
@@ -124,7 +124,7 @@ const Navbar = () => {
                         <FaDatabase className="text-blue-600 text-2xl" />
                         TechTrolley
                     </Link>
-              
+
                     <div className="md:hidden">
                         <button
                             onClick={toggleMobileMenu}
@@ -134,23 +134,23 @@ const Navbar = () => {
                             <FaBars />
                         </button>
                     </div>
-                    
+
                     <ul className="hidden md:flex space-x-6 items-center text-gray-800 font-medium">
                         {desktopNavLinks}
                     </ul>
                 </div>
             </nav>
-           
+
             {isMobileMenuOpen && (
                 <div
                     ref={overlayRef}
                     className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
-                >                    
+                >
                     <div
                         ref={mobileMenuRef}
                         className={`fixed top-0 left-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
                             }`}
-                    >                       
+                    >
                         <div className="flex items-center justify-between p-4 border-b bg-blue-600 text-white">
                             <div className="flex items-center gap-2">
                                 <FaUserCircle className="text-2xl" />
@@ -166,9 +166,9 @@ const Navbar = () => {
                                 <FaTimes />
                             </button>
                         </div>
-                       
+
                         <div className="flex flex-col h-full">
-                            <div className="flex-1 overflow-y-auto">                              
+                            <div className="flex-1 overflow-y-auto">
                                 <div className="py-4">
                                     <h3 className="px-6 text-lg font-semibold text-gray-800 mb-3">
                                         Shop by Category
@@ -230,7 +230,7 @@ const Navbar = () => {
                                         )}
                                     </ul>
                                 </div>
-                             
+
                                 <div className="border-t py-4">
                                     <h3 className="px-6 text-lg font-semibold text-gray-800 mb-3">
                                         Account & Settings
