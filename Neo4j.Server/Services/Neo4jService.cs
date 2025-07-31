@@ -200,6 +200,35 @@ namespace Neo4j.Server.Services
             await smtp.DisconnectAsync(true);
         }
 
+        public async Task<LoginValidationResult> ValidateUserAsync(string email, string password)
+        {
+            var query = @"
+        MATCH (u:User {email: $email})
+        RETURN u.password AS password, u.isVerified AS isVerified
+    ";
+
+            using var session = _driver.AsyncSession();
+            var result = await session.RunAsync(query, new { email });
+            var record = (await result.ToListAsync()).FirstOrDefault();
+
+            if (record == null)
+            {
+                return new LoginValidationResult { Exists = false };
+            }
+
+            string storedPassword = record["password"].As<string>();
+            bool isVerified = record["isVerified"].As<bool>();
+            bool passwordMatch = storedPassword == password; // Use hashing if needed
+
+            return new LoginValidationResult
+            {
+                Exists = true,
+                IsVerified = isVerified,
+                PasswordMatch = passwordMatch
+            };
+        }
+
+
 
         public async Task CreateProductAsync(ProductDto product)
         {

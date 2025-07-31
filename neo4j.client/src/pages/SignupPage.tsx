@@ -20,6 +20,7 @@ const SignupPage = () => {
 
         try {
             await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/products/register`, form);
+            console.log("API URL:", import.meta.env.VITE_API_BASE_URL)
             navigate('/login');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Signup failed.');

@@ -101,7 +101,7 @@ const Navbar = () => {
                     </li>
                     <li>
                         <Link to="/wishlist" className="flex flex-col items-center text-gray-700 hover:text-blue-600 transition">
-                            ❤️
+                           
                             <span className="text-sm font-semibold">Wishlist</span>
                         </Link>
                     </li>

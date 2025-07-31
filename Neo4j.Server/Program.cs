@@ -2,12 +2,12 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<Neo4j.Server.Services.Neo4jService>();
 
-// ✅ Configure Neo4j driver using appsettings.json
+
 var neo4jSettings = builder.Configuration.GetSection("Neo4j");
 var uri = neo4jSettings["Uri"];
 var user = neo4jSettings["User"];
@@ -15,14 +15,17 @@ var password = neo4jSettings["Password"];
 
 builder.Services.AddSingleton(GraphDatabase.Driver(uri, AuthTokens.Basic(user, password)));
 
-// ✅ Add CORS service
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("https://localhost:59548", "http://localhost:3000") // frontend dev URLs
-            .SetIsOriginAllowed(_ => true) // <-- allow any origin dynamically (for prod flexibility)
+            .WithOrigins(
+                "https://localhost:59548",
+                "http://localhost:3000",
+                "https://graphkart.onrender.com"
+            )
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -31,27 +34,25 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+
 app.UseDefaultFiles();
-app.MapStaticAssets(); // Serves /assets or static SPA files
+app.MapStaticAssets();
 
-// ✅ Apply CORS before routing
-app.UseCors("AllowAllOrigins");
 
-// ✅ Only use HTTPS redirection in development (to avoid issues on Render)
+app.UseCors("AllowFrontend");
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
     app.MapOpenApi();
 }
 
-// ✅ Use authorization/middleware
 app.UseAuthorization();
 app.MapControllers();
 
-// ✅ Fallback for SPA routing
 app.MapFallbackToFile("/index.html");
 
-// ✅ Render-compatible port binding
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Urls.Add($"http://*:{port}");
 

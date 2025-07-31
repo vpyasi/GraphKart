@@ -1,21 +1,43 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function LoginPage() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const handleLogin = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleLogin = async () => {
+        if (!email || !password) {
+            setError('Please enter both email and password');
+            return;
+        }
 
-        if (email && password) {           
-            localStorage.setItem('token', 'demo-token');
-            localStorage.setItem('user', JSON.stringify({ name: email }));
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/products/login`, {
+                email,
+                password,
+            });
+
+            const { token, user } = response.data;
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
 
             navigate('/');
-        } else {
-            alert('Please enter email and password');
+        } catch (err: any) {
+            if (err.response) {
+                if (err.response.status === 404) {
+                    setError('You have not signed up yet.');
+                } else if (err.response.status === 401) {
+                    setError(err.response.data.message || 'Invalid credentials.');
+                } else {
+                    setError('Login failed. Please try again.');
+                }
+            } else {
+                setError('Network error. Please try again.');
+            }
         }
     };
 
@@ -23,7 +45,6 @@ export default function LoginPage() {
         e.preventDefault();
         navigate('/signup');
     };
-
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-blue-50">
@@ -33,9 +54,11 @@ export default function LoginPage() {
                     <p className="text-gray-600 mt-2">Login to your account</p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-5">
+                <form className="space-y-5">
+                    {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+
                     <div>
-                        <label className="block text-gray-700 font-medium mb-1" htmlFor="email">
+                        <label htmlFor="email" className="block text-gray-700 font-medium mb-1">
                             Email Address
                         </label>
                         <input
@@ -44,13 +67,13 @@ export default function LoginPage() {
                             placeholder="you@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-white text-gray-900 placeholder-gray-400 border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="w-full border border-gray-300 px-4 py-2 rounded focus:ring-2 focus:ring-blue-400"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-gray-700 font-medium mb-1" htmlFor="password">
+                        <label htmlFor="password" className="block text-gray-700 font-medium mb-1">
                             Password
                         </label>
                         <input
@@ -59,7 +82,7 @@ export default function LoginPage() {
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-white text-gray-900 placeholder-gray-400 border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="w-full border border-gray-300 px-4 py-2 rounded focus:ring-2 focus:ring-blue-400"
                             required
                         />
                     </div>
@@ -69,8 +92,9 @@ export default function LoginPage() {
                     </div>
 
                     <button
-                        type="submit"
-                        className="w-full bg-blue-100 text-white font-semibold py-2 rounded hover:bg-white-200 transition"
+                        type="button"
+                        onClick={handleLogin}
+                        className="w-full bg-blue-500 text-white font-semibold py-2 rounded hover:bg-blue-600 transition"
                     >
                         Login
                     </button>
@@ -84,7 +108,6 @@ export default function LoginPage() {
                         >
                             Register
                         </button>
-
                     </p>
                 </form>
             </div>
