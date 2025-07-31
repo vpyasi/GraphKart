@@ -46,10 +46,13 @@ if (app.Environment.IsDevelopment())
 
 // ✅ Use authorization/middleware
 app.UseAuthorization();
-
 app.MapControllers();
 
 // ✅ Fallback for SPA routing
 app.MapFallbackToFile("/index.html");
+
+// ✅ Render-compatible port binding
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Urls.Add($"http://*:{port}");
 
 app.Run();
