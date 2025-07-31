@@ -15,7 +15,6 @@ var password = neo4jSettings["Password"];
 
 builder.Services.AddSingleton(GraphDatabase.Driver(uri, AuthTokens.Basic(user, password)));
 
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -26,8 +25,8 @@ builder.Services.AddCors(options =>
                 "http://localhost:3000",
                 "https://graphkart.onrender.com"
             )
-            .AllowAnyMethod()
             .AllowAnyHeader()
+            .AllowAnyMethod()
             .AllowCredentials();
     });
 });
@@ -38,9 +37,7 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.MapStaticAssets();
 
-
 app.UseCors("AllowFrontend");
-
 
 if (app.Environment.IsDevelopment())
 {

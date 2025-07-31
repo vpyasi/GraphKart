@@ -97,19 +97,19 @@ namespace Neo4j.Server.Services
             var session = _driver.AsyncSession();
             try
             {
-                var checkQuery = @"MATCH (u:User {username: $username}) RETURN u";
+                var checkQuery = @"MATCH (u:User) WHERE toLower(u.email) = toLower($email) RETURN u";
                 var checkCursor = await session.RunAsync(checkQuery, new { username = user.Username });
                 if (await checkCursor.FetchAsync()) return false;
 
                 var token = Guid.NewGuid().ToString();
 
                 var createQuery = @"
-            CREATE (u:User {
-                username: $username,
-                email: $email,
-                password: $password,
-                token: $token,
-                verified: false
+                                CREATE (u:User {
+                                    username: $username,
+                                    email: $email,
+                                    password: $password,
+                                    token: $token,
+                                    verified: false
             })
         ";
                 await session.RunAsync(createQuery, new
@@ -153,7 +153,7 @@ namespace Neo4j.Server.Services
         {
             await using var session = _driver.AsyncSession();
             try
-            {
+            {               
                 var checkQuery = "MATCH (u:User {token: $token}) RETURN u";
                 var result = await session.RunAsync(checkQuery, new { token });
 
@@ -165,18 +165,23 @@ namespace Neo4j.Server.Services
             SET u.verified = true
             REMOVE u.token";
 
-                await session.WriteTransactionAsync(async tx =>
-                {
-                    await tx.RunAsync(updateQuery, new { token });
-                });
+                await session.WriteTransactionAsync(tx =>
+                    tx.RunAsync(updateQuery, new { token })
+                );
 
                 return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Verification error: " + ex.Message);
+                return false;
             }
             finally
             {
                 await session.CloseAsync();
             }
         }
+
 
         public async Task SendVerificationEmail(string recipientEmail, string token)
         {
@@ -203,9 +208,10 @@ namespace Neo4j.Server.Services
         public async Task<LoginValidationResult> ValidateUserAsync(string email, string password)
         {
             var query = @"
-        MATCH (u:User {email: $email})
-        RETURN u.password AS password, u.isVerified AS isVerified
-    ";
+MATCH (u:User)
+WHERE toLower(u.email) = toLower($email)
+RETURN u.password AS password, u.verified AS isVerified
+";
 
             using var session = _driver.AsyncSession();
             var result = await session.RunAsync(query, new { email });
@@ -213,12 +219,17 @@ namespace Neo4j.Server.Services
 
             if (record == null)
             {
+                Console.WriteLine($"No user found with email: {email}");
                 return new LoginValidationResult { Exists = false };
             }
 
-            string storedPassword = record["password"].As<string>();
-            bool isVerified = record["isVerified"].As<bool>();
-            bool passwordMatch = storedPassword == password; // Use hashing if needed
+            string storedPassword = record["password"]?.As<string>() ?? string.Empty;
+
+            bool isVerified = record.Keys.Contains("isVerified") && record["isVerified"] is not null
+                ? record["isVerified"].As<bool>()
+                : false;
+
+            bool passwordMatch = storedPassword == password;
 
             return new LoginValidationResult
             {
@@ -227,6 +238,8 @@ namespace Neo4j.Server.Services
                 PasswordMatch = passwordMatch
             };
         }
+
+
 
 
 

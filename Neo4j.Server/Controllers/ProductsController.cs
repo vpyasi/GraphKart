@@ -53,22 +53,31 @@ namespace Neo4j.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto user)
         {
-            if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
-                return BadRequest(new { message = "Email and password are required." });
+            try
+            {
+                if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
+                    return BadRequest(new { message = "Email and password are required." });
 
-            var result = await _neo4j.ValidateUserAsync(user.Email, user.Password);
+                var result = await _neo4j.ValidateUserAsync(user.Email, user.Password);
 
-            if (!result.Exists)
-                return NotFound(new { message = "You have not signed up yet." });
+                if (!result.Exists)
+                    return NotFound(new { message = "You have not signed up yet." });
 
-            if (!result.IsVerified)
-                return Unauthorized(new { message = "Please verify your email before logging in." });
+                if (!result.IsVerified)
+                    return Unauthorized(new { message = "Please verify your email before logging in." });
 
-            if (!result.PasswordMatch)
-                return Unauthorized(new { message = "Incorrect password." });
+                if (!result.PasswordMatch)
+                    return Unauthorized(new { message = "Incorrect password." });
 
-            return Ok(new { message = "Login successful" });
+                return Ok(new { message = "Login successful" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Login Error] {ex.Message}");
+                return StatusCode(500, new { message = "Internal server error" });
+            }
         }
+
 
 
         [HttpPost("Add")]
