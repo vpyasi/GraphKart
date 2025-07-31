@@ -98,20 +98,22 @@ namespace Neo4j.Server.Services
             try
             {
                 var checkQuery = @"MATCH (u:User) WHERE toLower(u.email) = toLower($email) RETURN u";
-                var checkCursor = await session.RunAsync(checkQuery, new { username = user.Username });
+                
+                var checkCursor = await session.RunAsync(checkQuery, new { email = user.Email });
                 if (await checkCursor.FetchAsync()) return false;
 
                 var token = Guid.NewGuid().ToString();
 
                 var createQuery = @"
-                                CREATE (u:User {
-                                    username: $username,
-                                    email: $email,
-                                    password: $password,
-                                    token: $token,
-                                    verified: false
+            CREATE (u:User {
+                username: $username,
+                email: $email,
+                password: $password,
+                token: $token,
+                verified: false
             })
         ";
+
                 await session.RunAsync(createQuery, new
                 {
                     username = user.Username,
@@ -119,7 +121,6 @@ namespace Neo4j.Server.Services
                     password = user.Password,
                     token
                 });
-
 
                 await SendVerificationEmail(user.Email, token);
 
@@ -130,6 +131,7 @@ namespace Neo4j.Server.Services
                 await session.CloseAsync();
             }
         }
+
 
 
         public async Task CreateCategoryAsync(CategoryDto category)
