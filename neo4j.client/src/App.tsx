@@ -14,7 +14,7 @@ import AddProductPage from './pages/AddProductPage';
 import Verify from './pages/verify';
    
 const AppRoutes = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // Initially null
     const location = useLocation();
 
     useEffect(() => {
@@ -22,8 +22,13 @@ const AppRoutes = () => {
         setIsLoggedIn(!!token);
     }, [location]);
 
+    if (isLoggedIn === null) {
+        // You can also return a loading spinner here
+        return <div className="text-center mt-20">Checking authentication...</div>;
+    }
+
     return (
-        <>           
+        <>
             {isLoggedIn && <Navbar />}
 
             <main className="flex-grow w-full">
@@ -32,6 +37,7 @@ const AppRoutes = () => {
                         <>
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/signup" element={<SignupPage />} />
+                            <Route path="/verify" element={<Verify />} />
                             <Route path="*" element={<Navigate to="/login" replace />} />
                         </>
                     ) : (
@@ -41,10 +47,8 @@ const AppRoutes = () => {
                             <Route path="/category/:category" element={<CategoryPage />} />
                             <Route path="/admin" element={<AddProductPage />} />
                             <Route path="/product/:id" element={<ProductDetailPage />} />
-                             <Route path="*" element={<Navigate to="/" replace />} />
-                             <Route path="/wishlist" element={<WishlistPage />} />
-                             <Route path="/verify" element={<Verify />} />
-
+                            <Route path="/wishlist" element={<WishlistPage />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
                         </>
                     )}
                 </Routes>
@@ -54,7 +58,6 @@ const AppRoutes = () => {
         </>
     );
 };
-
 function App() {
     return (
         <Router>
